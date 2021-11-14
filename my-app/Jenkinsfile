@@ -1,0 +1,19 @@
+pipeline {
+
+    agent any
+
+
+    stages {
+       stage ('Pull') {
+            steps {
+               script{
+                   checkout({$class: 'GitSCM', branches: [[name: '*/master']]},
+                       userRemoteConfigs: [[                
+                    		url: "https://github.com/baha2597/LC.git",
+                    		credentialsId: "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";]]) 
+            }
+        }
+        
+      }
+     }
+}
