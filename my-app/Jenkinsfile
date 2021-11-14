@@ -1,19 +1,54 @@
-pipeline {
+pipeline
+{
 
-    agent any
+agent any
+ stages {
+ 
+   stage('PULL') {
+
+   steps {
+   
+   script {
+
+checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+
+userRemoteConfigs: [[ url: 'https://github.com/baha2597/LC.git' ]]])
 
 
-    stages {
-       stage ('Pull') {
-            steps {
-               script{
-                   checkout({$class: 'GitSCM', branches: [[name: '*/master']]},
-                       userRemoteConfigs: [[                
-                    		url: "https://github.com/baha2597/LC.git",
-                    		credentialsId: "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";]]) 
+
+}
+}
+}
+
+ stage('npm-Install') {
+             steps{
+                script{
+                    sh "npm install"
+                }
             }
         }
         
-      }
-     }
+stage('build') {
+steps{
+
+script {
+
+sh "ansible-playbook Ansible/build.yml -i Ansible/Inventory/host.yml "
+
+}
+}
+} 
+        
+stage('docker')
+{
+                  steps {
+                         script{
+                         sh "ansible-playbook Ansible/docker.yml -i Ansible/inventory/host.yml "
+                                }
+                        }
+  } 
+      
+
+
+}
 }
